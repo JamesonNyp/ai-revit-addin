@@ -1,0 +1,58 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitAIAssistant", "src\RevitAIAssistant\RevitAIAssistant.csproj", "{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitAIAssistant.API", "src\RevitAIAssistant.API\RevitAIAssistant.API.csproj", "{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitAIAssistant.Tests", "src\RevitAIAssistant.Tests\RevitAIAssistant.Tests.csproj", "{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4F8D9C7-6B5A-4D8C-9F7E-8B6A9D5C7E4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{F5A9E8D7-7C6B-4E9D-8F6E-9C7B8D6E5A4F}"
+	ProjectSection(SolutionItems) = preProject
+		docs\api-integration.md = docs\api-integration.md
+		docs\development-setup.md = docs\development-setup.md
+		docs\revit-deployment.md = docs\revit-deployment.md
+		docs\user-guide.md = docs\user-guide.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A6B9D8E7-8D7C-4F9E-9D7F-8E6B9C5D7E6A}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\build.ps1 = scripts\build.ps1
+		scripts\dev-setup.ps1 = scripts\dev-setup.ps1
+		scripts\package.ps1 = scripts\package.ps1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D}.Debug|x64.ActiveCfg = Debug|x64
+		{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D}.Debug|x64.Build.0 = Debug|x64
+		{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D}.Release|x64.ActiveCfg = Release|x64
+		{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D}.Release|x64.Build.0 = Release|x64
+		{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E}.Debug|x64.ActiveCfg = Debug|x64
+		{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E}.Debug|x64.Build.0 = Debug|x64
+		{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E}.Release|x64.ActiveCfg = Release|x64
+		{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E}.Release|x64.Build.0 = Release|x64
+		{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F}.Debug|x64.ActiveCfg = Debug|x64
+		{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F}.Debug|x64.Build.0 = Debug|x64
+		{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F}.Release|x64.ActiveCfg = Release|x64
+		{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8B9F5E6B-4C5A-4F8A-9C6D-7E8F9A5B6C3D} = {E4F8D9C7-6B5A-4D8C-9F7E-8B6A9D5C7E4F}
+		{A7B9C8D5-6E4F-4A8B-9D7C-5F8E6A9B7C4E} = {E4F8D9C7-6B5A-4D8C-9F7E-8B6A9D5C7E4F}
+		{C9D8E7F6-5A4B-4C8D-9E6F-8A7B9C5D6E4F} = {E4F8D9C7-6B5A-4D8C-9F7E-8B6A9D5C7E4F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8C9D7E6-5F8A-4E9B-8D6C-7F9E8A6B5C4D}
+	EndGlobalSection
+EndGlobal
