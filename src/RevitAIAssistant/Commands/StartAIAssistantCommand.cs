@@ -55,8 +55,7 @@ namespace RevitAIAssistant.Commands
 
                 // Update context with current document
                 var sessionManager = App.ServiceProvider.GetRequiredService<SessionManager>();
-                sessionManager.UpdateDocumentContext(uiDoc.Document);
-                sessionManager.UpdateViewContext(uiDoc.ActiveView);
+                sessionManager.UpdateUIDocumentContext(uiDoc);
 
                 return Result.Succeeded;
             }

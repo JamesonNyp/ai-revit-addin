@@ -16,8 +16,7 @@ namespace RevitAIAssistant
     public class App : IExternalApplication
     {
         private static IServiceProvider? _serviceProvider;
-        private static DockablePane? _aiAssistantPane;
-        private const string DockablePaneId = "AI_Assistant_Panel";
+        private const string DockablePaneGuid = "7F8B8C5D-4A9E-4B8C-9D7E-6F8A9B5C7D4E";
 
         public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider not initialized");
 
@@ -75,23 +74,12 @@ namespace RevitAIAssistant
             // Configure logging
             services.AddLogging(builder =>
             {
-                builder.AddConsole();
                 builder.AddDebug();
                 builder.SetMinimumLevel(LogLevel.Information);
             });
 
-            // Configure HTTP clients
-            services.AddHttpClient<AIOrchestrationClient>(client =>
-            {
-                client.BaseAddress = new Uri(GetApiBaseUrl());
-                client.Timeout = TimeSpan.FromSeconds(30);
-            });
-
-            // Register services
+            // For mock UI, just register minimal services
             services.AddSingleton<SessionManager>();
-            services.AddSingleton<RevitContextExtractor>();
-            services.AddSingleton<CommandExecutor>();
-            services.AddTransient<AIOrchestrationClient>();
 
             // Build service provider
             _serviceProvider = services.BuildServiceProvider();
@@ -143,13 +131,11 @@ namespace RevitAIAssistant
 
         private void RegisterDockablePane(UIControlledApplication application)
         {
-            var dpid = new DockablePaneId(new Guid("7F8B8C5D-4A9E-4B8C-9D7E-6F8A9B5C7D4E"));
-            _aiAssistantPane = new DockablePane(dpid, "AI Engineering Assistant");
+            var dpid = new DockablePaneId(new Guid(DockablePaneGuid));
             
-            var aiAssistantPanel = new AIAssistantPanel();
-            _aiAssistantPane.SetContent(aiAssistantPanel);
-
-            application.RegisterDockablePane(dpid, "AI Assistant", _aiAssistantPane);
+            var dockablePaneProvider = new AIAssistantPaneProvider();
+            
+            application.RegisterDockablePane(dpid, "AI Engineering Assistant", dockablePaneProvider);
         }
 
         private void SubscribeToEvents(UIControlledApplication application)
@@ -157,35 +143,35 @@ namespace RevitAIAssistant
             // Subscribe to document events for context awareness
             application.ControlledApplication.DocumentOpened += OnDocumentOpened;
             application.ControlledApplication.DocumentClosed += OnDocumentClosed;
-            application.ViewActivated += OnViewActivated;
         }
 
         private void OnDocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
         {
-            var logger = ServiceProvider.GetRequiredService<ILogger<App>>();
-            logger.LogInformation("Document opened: {DocumentTitle}", e.Document?.Title ?? "Unknown");
-            
-            // Update context in session manager
-            var sessionManager = ServiceProvider.GetRequiredService<SessionManager>();
-            sessionManager.UpdateDocumentContext(e.Document);
+            if (ServiceProvider != null)
+            {
+                var logger = ServiceProvider.GetService<ILogger<App>>();
+                logger?.LogInformation("Document opened: {DocumentTitle}", e.Document?.Title ?? "Unknown");
+                
+                // Update context in session manager
+                var sessionManager = ServiceProvider.GetService<SessionManager>();
+                sessionManager?.UpdateDocumentContext(e.Document);
+            }
         }
 
         private void OnDocumentClosed(object sender, Autodesk.Revit.DB.Events.DocumentClosedEventArgs e)
         {
-            var logger = ServiceProvider.GetRequiredService<ILogger<App>>();
-            logger.LogInformation("Document closed");
-            
-            // Clear context in session manager
-            var sessionManager = ServiceProvider.GetRequiredService<SessionManager>();
-            sessionManager.ClearDocumentContext();
+            if (ServiceProvider != null)
+            {
+                var logger = ServiceProvider.GetService<ILogger<App>>();
+                logger?.LogInformation("Document closed");
+                
+                // Clear context in session manager
+                var sessionManager = ServiceProvider.GetService<SessionManager>();
+                sessionManager?.ClearDocumentContext();
+            }
         }
 
-        private void OnViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            // Update current view context
-            var sessionManager = ServiceProvider.GetRequiredService<SessionManager>();
-            sessionManager.UpdateViewContext(e.CurrentActiveView);
-        }
+        // Removed OnViewActivated for simplicity in mock
 
         private BitmapImage LoadImage(string imageName)
         {
@@ -212,8 +198,8 @@ namespace RevitAIAssistant
                 logger?.LogWarning("Failed to load image {ImageName}: {Error}", imageName, ex.Message);
             }
 
-            // Return default image if loading fails
-            return new BitmapImage(new Uri("pack://application:,,,/RevitAIAssistant;component/Resources/Icons/default.png"));
+            // Return empty image if loading fails
+            return new BitmapImage();
         }
 
         private string GetApiBaseUrl()

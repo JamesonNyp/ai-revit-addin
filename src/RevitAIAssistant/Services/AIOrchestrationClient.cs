@@ -18,7 +18,7 @@ namespace RevitAIAssistant.Services
     /// HTTP client for communicating with the AI Engineering Platform
     /// Implements command queue pattern for reliable task execution
     /// </summary>
-    public class AIOrchestrationClient
+    public class AIOrchestrationClient : IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<AIOrchestrationClient> _logger;
@@ -282,6 +282,47 @@ namespace RevitAIAssistant.Services
         }
 
         /// <summary>
+        /// Send a general query to the AI platform
+        /// </summary>
+        public async Task<QueryResponse> SendQueryAsync(string query, EngineeringContext context, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                _logger.LogInformation("Sending query to AI platform: {Query}", query);
+
+                var request = new QueryRequest
+                {
+                    Query = query,
+                    Context = context,
+                    SessionId = Guid.NewGuid().ToString()
+                };
+
+                var json = JsonConvert.SerializeObject(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _retryPolicy.ExecuteAsync(async () =>
+                    await _httpClient.PostAsync("/api/v1/query", content, cancellationToken));
+
+                response.EnsureSuccessStatusCode();
+
+                var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+                var queryResponse = JsonConvert.DeserializeObject<QueryResponse>(responseJson);
+
+                if (queryResponse == null)
+                {
+                    throw new InvalidOperationException("Received null response from server");
+                }
+
+                return queryResponse;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP error while sending query");
+                throw new AIOrchestrationException("Failed to communicate with AI platform", ex);
+            }
+        }
+
+        /// <summary>
         /// Get current Revit context
         /// </summary>
         private EngineeringContext GetCurrentContext()
@@ -304,6 +345,7 @@ namespace RevitAIAssistant.Services
             _processingCancellation?.Cancel();
             _processingCancellation?.Dispose();
             _commandQueueLock?.Dispose();
+            _httpClient?.Dispose();
         }
     }
 

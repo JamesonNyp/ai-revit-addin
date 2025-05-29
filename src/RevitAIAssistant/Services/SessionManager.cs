@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Microsoft.Extensions.Logging;
 using RevitAIAssistant.Models;
 
@@ -13,6 +15,7 @@ namespace RevitAIAssistant.Services
     {
         private readonly ILogger<SessionManager> _logger;
         private Document? _currentDocument;
+        private UIDocument? _currentUIDocument;
         private View? _currentView;
         private EngineeringContext? _currentContext;
         private readonly List<string> _sessionHistory = new();
@@ -25,6 +28,7 @@ namespace RevitAIAssistant.Services
         }
 
         public Document? CurrentDocument => _currentDocument;
+        public UIDocument? CurrentUIDocument => _currentUIDocument;
         public View? CurrentView => _currentView;
         public EngineeringContext? CurrentContext => _currentContext;
         public IReadOnlyList<string> SessionHistory => _sessionHistory.AsReadOnly();
@@ -42,6 +46,7 @@ namespace RevitAIAssistant.Services
             else
             {
                 _currentContext = null;
+                _currentUIDocument = null;
             }
 
             OnContextChanged(new ContextChangedEventArgs
@@ -49,6 +54,20 @@ namespace RevitAIAssistant.Services
                 ChangeType = ContextChangeType.Document,
                 NewContext = _currentContext
             });
+        }
+
+        public void UpdateUIDocumentContext(UIDocument? uiDocument)
+        {
+            _currentUIDocument = uiDocument;
+            if (uiDocument != null)
+            {
+                UpdateDocumentContext(uiDocument.Document);
+                UpdateViewContext(uiDocument.ActiveView);
+            }
+            else
+            {
+                UpdateDocumentContext(null);
+            }
         }
 
         public void UpdateViewContext(View? view)
@@ -80,6 +99,7 @@ namespace RevitAIAssistant.Services
         public void ClearDocumentContext()
         {
             _currentDocument = null;
+            _currentUIDocument = null;
             _currentView = null;
             _currentContext = null;
             _logger.LogInformation("Document context cleared");

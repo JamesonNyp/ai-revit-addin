@@ -1,0 +1,284 @@
+<Window x:Class="RevitAIAssistant.UI.Dialogs.ApprovalDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Professional Engineer Approval Required"
+        Height="600" Width="800"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Style x:Key="ApprovalHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,12,0,8"/>
+            <Setter Property="Foreground" Value="#006F97"/>
+        </Style>
+        
+        <Style x:Key="CriticalValueStyle" TargetType="Run">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#C80000"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="#FFF5E5" 
+                BorderBrush="#FFB366" 
+                BorderThickness="0,0,0,1"
+                Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Path Grid.Column="0" 
+                      Data="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"
+                      Fill="#FF8800"
+                      Width="32" Height="32"
+                      Margin="0,0,16,0"
+                      VerticalAlignment="Center"/>
+                
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Professional Engineer Approval Required" 
+                               Style="{StaticResource ApprovalHeaderStyle}"/>
+                    <TextBlock Text="{Binding ApprovalType}" 
+                               FontSize="14"
+                               Foreground="#666666"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="24">
+            <StackPanel>
+                <!-- Description -->
+                <Border Background="#F0F0F0" 
+                        CornerRadius="4" 
+                        Padding="16"
+                        Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Approval Description" 
+                                   Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock Text="{Binding Description}" 
+                                   TextWrapping="Wrap"
+                                   FontSize="13"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Engineering Details -->
+                <TextBlock Text="Engineering Analysis" 
+                           Style="{StaticResource SectionHeaderStyle}"/>
+                
+                <!-- Calculation Summary -->
+                <Border BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="4"
+                        Padding="16"
+                        Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Calculation Results" 
+                                       FontWeight="SemiBold" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <ItemsControl ItemsSource="{Binding CalculationResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" 
+                                                       Text="{Binding Name}" 
+                                                       Foreground="#666666"/>
+                                            <TextBlock Grid.Column="1" 
+                                                       FontWeight="SemiBold">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0:F2} {1}">
+                                                        <Binding Path="Value"/>
+                                                        <Binding Path="Units"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCritical}" Value="True">
+                                                                <Setter Property="Foreground" Value="#C80000"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Code References" 
+                                       FontWeight="SemiBold" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <ItemsControl ItemsSource="{Binding CodeReferences}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,2">
+                                            <Run Text="•"/>
+                                            <Run Text="{Binding}"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- Methodology -->
+                <TextBlock Text="Methodology" 
+                           Style="{StaticResource SectionHeaderStyle}"/>
+                <Border Background="#F8F8F8" 
+                        BorderBrush="#DDDDDD" 
+                        BorderThickness="1" 
+                        CornerRadius="4"
+                        Padding="16"
+                        Margin="0,0,0,16">
+                    <TextBlock Text="{Binding Methodology}" 
+                               TextWrapping="Wrap"
+                               FontFamily="Consolas"
+                               FontSize="12"/>
+                </Border>
+                
+                <!-- Required Actions -->
+                <TextBlock Text="Required Actions" 
+                           Style="{StaticResource SectionHeaderStyle}"/>
+                <ItemsControl ItemsSource="{Binding RequiredActions}"
+                              Margin="0,0,0,16">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" 
+                                          IsChecked="{Binding IsCompleted}"/>
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding Description}" 
+                                           TextWrapping="Wrap"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <!-- Liability Statement -->
+                <Border Background="#FFE5E5" 
+                        BorderBrush="#FFAAAA" 
+                        BorderThickness="1" 
+                        CornerRadius="4"
+                        Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Professional Liability Statement" 
+                                   Style="{StaticResource SectionHeaderStyle}"
+                                   Foreground="#C80000"/>
+                        <TextBlock Text="{Binding LiabilityStatement}" 
+                                   TextWrapping="Wrap"
+                                   FontSize="12"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Comments Section -->
+                <TextBlock Text="Review Comments" 
+                           Style="{StaticResource SectionHeaderStyle}"
+                           Margin="0,16,0,8"/>
+                <TextBox Text="{Binding Comments}" 
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         MinHeight="100"
+                         BorderBrush="#CCCCCC"
+                         Padding="8"/>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Footer -->
+        <Border Grid.Row="2" 
+                Background="#F5F5F5" 
+                BorderBrush="#DDDDDD" 
+                BorderThickness="0,1,0,0"
+                Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Engineer Info -->
+                <StackPanel Grid.Column="0" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Reviewing Engineer: " 
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding ReviewingEngineer.Name}"/>
+                    <TextBlock Text=" (" Margin="4,0,0,0"/>
+                    <TextBlock Text="{Binding ReviewingEngineer.LicenseNumber}"/>
+                    <TextBlock Text=")"/>
+                </StackPanel>
+                
+                <!-- Action Buttons -->
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal">
+                    <Button Content="Request Additional Info" 
+                            Padding="12,8" 
+                            Margin="0,0,8,0"
+                            Background="#FFA500"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Command="{Binding RequestInfoCommand}"/>
+                    
+                    <Button Content="Reject" 
+                            Padding="12,8" 
+                            Margin="0,0,8,0"
+                            Background="#DC3545"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Command="{Binding RejectCommand}"/>
+                    
+                    <Button Content="Approve" 
+                            Padding="16,8" 
+                            Background="#28A745"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontWeight="SemiBold"
+                            Command="{Binding ApproveCommand}"
+                            IsEnabled="{Binding CanApprove}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

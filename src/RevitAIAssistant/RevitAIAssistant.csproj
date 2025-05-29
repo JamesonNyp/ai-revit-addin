@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>x64</Platforms>
     <OutputType>Library</OutputType>
@@ -8,7 +8,7 @@
     <RootNamespace>RevitAIAssistant</RootNamespace>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
@@ -26,18 +26,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autodesk.Revit.SDK" Version="2025.0.0" />
+    <!-- Revit SDK is referenced directly via RevitAPI.dll and RevitAPIUI.dll -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Polly" Version="7.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RevitAIAssistant.API\RevitAIAssistant.API.csproj" />
+    <!-- Embedded Resources -->
+    <Resource Include="Resources\Icons\*.png" />
+    <Page Include="**\*.xaml" Exclude="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
   </ItemGroup>
 
   <ItemGroup>
@@ -55,12 +65,20 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="RevitAIAssistant.addin">
+    <None Include="..\..\RevitAIAssistant.addin">
+      <Link>RevitAIAssistant.addin</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
-    <Exec Command="xcopy /Y &quot;$(TargetDir)*.*&quot; &quot;$(AppData)\Autodesk\Revit\Addins\2025\RevitAIAssistant\&quot;" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      <RevitAddinsFolder>$(AppData)\Autodesk\Revit\Addins\2025</RevitAddinsFolder>
+    </PropertyGroup>
+    <Message Text="Copying add-in files to Revit Addins folder..." Importance="high" />
+    <Copy SourceFiles="$(OutputPath)RevitAIAssistant.dll" DestinationFolder="$(RevitAddinsFolder)" />
+    <Copy SourceFiles="$(OutputPath)RevitAIAssistant.addin" DestinationFolder="$(RevitAddinsFolder)" />
+    <Copy SourceFiles="$(OutputPath)*.dll" DestinationFolder="$(RevitAddinsFolder)" 
+          Condition="'%(Filename)' != 'RevitAPI' And '%(Filename)' != 'RevitAPIUI'" />
   </Target>
 </Project>
