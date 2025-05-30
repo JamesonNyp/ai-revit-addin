@@ -189,7 +189,11 @@ namespace RevitAIAssistant.Services
                     {
                         if (connector.Domain == Domain.DomainElectrical)
                         {
-                            elementInfo.Voltage = connector.Voltage;
+                            // In Revit 2025, Voltage property was removed from Connector
+                            // Get voltage from the electrical system instead
+                            var voltage = GetConnectorVoltage(connector);
+                            if (voltage.HasValue)
+                                elementInfo.Voltage = voltage.Value;
                             elementInfo.ApparentLoad = GetParameterValue<double>(element, "Apparent Load");
                             elementInfo.LoadClassification = GetParameterValue(element, "Load Classification") ?? string.Empty;
                             break;
@@ -237,7 +241,8 @@ namespace RevitAIAssistant.Services
                 }
                 
                 // Get bounding box
-                viewInfo.BoundingBox = view.CropBoxActive ? view.CropBox : view.Outline;
+                // BoundingBox only from CropBox if active (Outline is BoundingBoxUV)
+                viewInfo.BoundingBox = view.CropBoxActive ? view.CropBox : null;
             }
             catch (Exception ex)
             {
@@ -270,7 +275,7 @@ namespace RevitAIAssistant.Services
                         Name = elecSystem.Name,
                         SystemType = "Electrical",
                         SystemClassification = elecSystem.SystemType.ToString(),
-                        SystemVoltage = elecSystem.Voltage,
+                        SystemVoltage = GetElectricalSystemVoltage(elecSystem),
                         TotalConnectedLoad = GetSystemLoad(elecSystem, LoadType.ApparentLoad),
                         DemandLoad = GetSystemLoad(elecSystem, LoadType.DemandLoad)
                     };
@@ -400,7 +405,7 @@ namespace RevitAIAssistant.Services
             };
 
             return element.Category != null && 
-                   electricalCategories.Contains((BuiltInCategory)element.Category.Id.IntegerValue);
+                   electricalCategories.Contains((BuiltInCategory)element.Category.Id.Value);
         }
 
         private double CalculateGrossArea(Document document)
@@ -589,7 +594,7 @@ namespace RevitAIAssistant.Services
                 case StorageType.Double:
                     return parameter.AsDouble();
                 case StorageType.ElementId:
-                    return parameter.AsElementId().IntegerValue;
+                    return parameter.AsElementId().Value;
                 default:
                     return null;
             }
@@ -604,6 +609,43 @@ namespace RevitAIAssistant.Services
                     : system.LookupParameter("Total Demand Load");
                     
                 return loadParam?.AsDouble() ?? 0.0;
+            }
+            catch
+            {
+                return 0.0;
+            }
+        }
+        
+        private double? GetConnectorVoltage(Connector connector)
+        {
+            try
+            {
+                // In Revit 2025, voltage is obtained through the electrical system
+                var owner = connector.Owner;
+                if (owner is FamilyInstance familyInstance)
+                {
+                    var elecSystems = familyInstance.MEPModel?.GetElectricalSystems();
+                    if (elecSystems != null && elecSystems.Any())
+                    {
+                        return GetElectricalSystemVoltage(elecSystems.First());
+                    }
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        
+        private double GetElectricalSystemVoltage(ElectricalSystem elecSystem)
+        {
+            try
+            {
+                // In Revit 2025, use parameter instead of direct property
+                var voltageParam = elecSystem.LookupParameter("Voltage") ?? 
+                                  elecSystem.LookupParameter("RBS_ELEC_VOLTAGE");
+                return voltageParam?.AsDouble() ?? 0.0;
             }
             catch
             {

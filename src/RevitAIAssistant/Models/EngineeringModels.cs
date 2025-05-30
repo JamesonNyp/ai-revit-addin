@@ -15,9 +15,6 @@ namespace RevitAIAssistant.Models
         public List<SystemInfo> VisibleSystems { get; set; } = new();
         public EngineerInfo CurrentEngineer { get; set; } = new();
         public List<string> ApplicableCodes { get; set; } = new();
-        public string ProjectName { get; set; } = string.Empty;
-        public string Discipline { get; set; } = "Electrical";
-        public string Phase { get; set; } = "Design Development";
         public string ActiveSystem { get; set; } = string.Empty;
         public Dictionary<string, object> AdditionalData { get; set; } = new();
     }
@@ -261,37 +258,6 @@ namespace RevitAIAssistant.Models
         ConditionallyApproved
     }
 
-    /// <summary>
-    /// Command to be executed in Revit
-    /// </summary>
-    public class RevitCommand
-    {
-        public string CommandId { get; set; } = Guid.NewGuid().ToString();
-        public string CommandType { get; set; } = string.Empty;
-        public Dictionary<string, object> Parameters { get; set; } = new();
-        public bool RequiresTransaction { get; set; } = true;
-        public string TransactionName { get; set; } = string.Empty;
-        public string ExpectedResult { get; set; } = string.Empty;
-        public CommandValidation? Validation { get; set; }
-    }
-
-    /// <summary>
-    /// Command validation criteria
-    /// </summary>
-    public class CommandValidation
-    {
-        public List<string> PreConditions { get; set; } = new();
-        public List<string> PostConditions { get; set; } = new();
-        public Dictionary<string, object> ExpectedValues { get; set; } = new();
-    }
-
-    /// <summary>
-    /// Result of command execution
-    /// </summary>
-    public class CommandExecutionResult
-    {
-        public string CommandId { get; set; } = string.Empty;
-        public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
         public List<ElementId> CreatedElements { get; set; } = new();
         public List<ElementId> ModifiedElements { get; set; } = new();

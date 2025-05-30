@@ -244,8 +244,8 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully created panel schedule '{panelName}'";
                     result.CreatedElements.Add(panelInstance.Id);
-                    result.ResultData["panel_id"] = panelInstance.Id.IntegerValue;
-                    result.ResultData["system_id"] = electricalSystem.Id.IntegerValue;
+                    result.ResultData["panel_id"] = panelInstance.Id.Value;
+                    result.ResultData["system_id"] = electricalSystem.Id.Value;
 
                     transaction.Commit();
                 }
@@ -351,7 +351,7 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully created circuit '{circuitNumber} - {circuitName}'";
                     result.CreatedElements.Add(electricalSystem.Id);
-                    result.ResultData["circuit_id"] = electricalSystem.Id.IntegerValue;
+                    result.ResultData["circuit_id"] = electricalSystem.Id.Value;
 
                     transaction.Commit();
                 }
@@ -427,7 +427,7 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully placed {familyName}";
                     result.CreatedElements.Add(instance.Id);
-                    result.ResultData["element_id"] = instance.Id.IntegerValue;
+                    result.ResultData["element_id"] = instance.Id.Value;
 
                     transaction.Commit();
                 }
@@ -491,7 +491,7 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully created duct system '{systemName}'";
                     result.CreatedElements.Add(mechanicalSystem.Id);
-                    result.ResultData["system_id"] = mechanicalSystem.Id.IntegerValue;
+                    result.ResultData["system_id"] = mechanicalSystem.Id.Value;
 
                     transaction.Commit();
                 }
@@ -536,7 +536,7 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully created pipe system '{systemName}'";
                     result.CreatedElements.Add(pipingSystem.Id);
-                    result.ResultData["system_id"] = pipingSystem.Id.IntegerValue;
+                    result.ResultData["system_id"] = pipingSystem.Id.Value;
 
                     transaction.Commit();
                 }
@@ -648,7 +648,7 @@ namespace RevitAIAssistant.Services
                     result.Success = true;
                     result.Message = $"Successfully created schedule '{scheduleName}'";
                     result.CreatedElements.Add(schedule.Id);
-                    result.ResultData["schedule_id"] = schedule.Id.IntegerValue;
+                    result.ResultData["schedule_id"] = schedule.Id.Value;
 
                     transaction.Commit();
                 }
