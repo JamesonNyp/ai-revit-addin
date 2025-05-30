@@ -8,12 +8,14 @@ namespace RevitAIAssistant.Models
     /// </summary>
     public class RevitCommand
     {
+        public string CommandId { get; set; } = Guid.NewGuid().ToString();
         public string CommandType { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Dictionary<string, object> Parameters { get; set; } = new();
         public CommandPriority Priority { get; set; } = CommandPriority.Normal;
         public bool RequiresTransaction { get; set; } = true;
         public string? TransactionName { get; set; }
+        public CommandValidation? Validation { get; set; }
     }
 
     public enum CommandPriority

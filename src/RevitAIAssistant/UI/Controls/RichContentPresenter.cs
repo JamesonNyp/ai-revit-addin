@@ -167,7 +167,7 @@ namespace RevitAIAssistant.UI.Controls
                     {
                         Background = new SolidColorBrush(theme.ApprovalRequiredColor),
                         CornerRadius = new CornerRadius(10),
-                        Padding = new Thickness(8, 2),
+                        Padding = new Thickness(8, 2, 8, 2),
                         Margin = new Thickness(8, 0, 0, 0)
                     };
                     
@@ -218,7 +218,7 @@ namespace RevitAIAssistant.UI.Controls
             var approveButton = new Button
             {
                 Content = "Approve & Execute",
-                Padding = new Thickness(16, 8),
+                Padding = new Thickness(16, 8, 16, 8),
                 Margin = new Thickness(0, 0, 8, 0),
                 Background = new SolidColorBrush(theme.SuccessColor),
                 Foreground = Brushes.White,
@@ -230,7 +230,7 @@ namespace RevitAIAssistant.UI.Controls
             var rejectButton = new Button
             {
                 Content = "Cancel",
-                Padding = new Thickness(16, 8),
+                Padding = new Thickness(16, 8, 16, 8),
                 Background = new SolidColorBrush(theme.SecondaryButtonBackground),
                 Foreground = new SolidColorBrush(theme.SecondaryButtonText),
                 BorderThickness = new Thickness(0)
@@ -316,7 +316,7 @@ namespace RevitAIAssistant.UI.Controls
                     {
                         Background = new SolidColorBrush(theme.CodeBackground),
                         CornerRadius = new CornerRadius(4),
-                        Padding = new Thickness(8, 4),
+                        Padding = new Thickness(8, 4, 8, 4),
                         Margin = new Thickness(16, 2, 0, 2)
                     };
 
@@ -416,7 +416,7 @@ namespace RevitAIAssistant.UI.Controls
             {
                 Background = new SolidColorBrush(theme.AccentColor),
                 CornerRadius = new CornerRadius(10),
-                Padding = new Thickness(8, 2),
+                Padding = new Thickness(8, 2, 8, 2),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Margin = new Thickness(0, 0, 0, 8)
             };
@@ -491,7 +491,7 @@ namespace RevitAIAssistant.UI.Controls
                 var exportButton = new Button
                 {
                     Content = $"Export as {format}",
-                    Padding = new Thickness(12, 6),
+                    Padding = new Thickness(12, 6, 12, 6),
                     Margin = new Thickness(0, 0, 8, 8),
                     Background = new SolidColorBrush(theme.SecondaryButtonBackground),
                     Foreground = new SolidColorBrush(theme.SecondaryButtonText),
@@ -659,7 +659,7 @@ namespace RevitAIAssistant.UI.Controls
                 {
                     Background = new SolidColorBrush(theme.AccentColor),
                     CornerRadius = new CornerRadius(10),
-                    Padding = new Thickness(8, 2)
+                    Padding = new Thickness(8, 2, 8, 2)
                 };
                 
                 var agentText = new TextBlock
@@ -859,7 +859,7 @@ namespace RevitAIAssistant.UI.Controls
             var viewDetailsButton = new Button
             {
                 Content = "View Detailed Report",
-                Padding = new Thickness(16, 8),
+                Padding = new Thickness(16, 8, 16, 8),
                 Margin = new Thickness(0, 0, 8, 0),
                 Background = new SolidColorBrush(theme.AccentColor),
                 Foreground = Brushes.White,
@@ -870,7 +870,7 @@ namespace RevitAIAssistant.UI.Controls
             var exportButton = new Button
             {
                 Content = "Export Results",
-                Padding = new Thickness(16, 8),
+                Padding = new Thickness(16, 8, 16, 8),
                 Background = new SolidColorBrush(theme.SecondaryButtonBackground),
                 Foreground = new SolidColorBrush(theme.SecondaryButtonText),
                 BorderThickness = new Thickness(1),

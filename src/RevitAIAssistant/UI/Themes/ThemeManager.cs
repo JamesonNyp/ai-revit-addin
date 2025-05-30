@@ -118,6 +118,7 @@ namespace RevitAIAssistant.UI.Themes
                 PanelBackground = Color.FromArgb(255, 250, 250, 250),
                 InputBackground = Colors.White,
                 ChatBackground = Color.FromArgb(255, 245, 245, 245),
+                CardBackground = Color.FromArgb(255, 248, 248, 248),
                 
                 // Text colors
                 PrimaryText = Color.FromArgb(255, 32, 32, 32),
@@ -177,6 +178,7 @@ namespace RevitAIAssistant.UI.Themes
                 PanelBackground = Color.FromArgb(255, 37, 37, 37),
                 InputBackground = Color.FromArgb(255, 45, 45, 45),
                 ChatBackground = Color.FromArgb(255, 25, 25, 25),
+                CardBackground = Color.FromArgb(255, 42, 42, 42),
                 
                 // Text colors
                 PrimaryText = Color.FromArgb(255, 240, 240, 240),
@@ -235,6 +237,7 @@ namespace RevitAIAssistant.UI.Themes
         public Color PanelBackground { get; set; }
         public Color InputBackground { get; set; }
         public Color ChatBackground { get; set; }
+        public Color CardBackground { get; set; }
         
         // Text colors
         public Color PrimaryText { get; set; }

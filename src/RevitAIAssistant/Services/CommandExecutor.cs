@@ -270,7 +270,7 @@ namespace RevitAIAssistant.Services
                 {
                     transaction.Start();
 
-                    var panelId = new ElementId(Convert.ToInt32(command.Parameters["panel_id"]));
+                    var panelId = new ElementId(Convert.ToInt64(command.Parameters["panel_id"]));
                     var panel = document.GetElement(panelId) as FamilyInstance;
 
                     if (panel == null)
@@ -322,7 +322,7 @@ namespace RevitAIAssistant.Services
                     var voltage = Convert.ToDouble(command.Parameters["voltage"]);
                     var loadName = command.Parameters["load_name"].ToString();
                     var connectedLoad = Convert.ToDouble(command.Parameters["connected_load"]);
-                    var panelId = new ElementId(Convert.ToInt32(command.Parameters["panel_id"]));
+                    var panelId = new ElementId(Convert.ToInt64(command.Parameters["panel_id"]));
 
                     // Get panel
                     var panel = document.GetElement(panelId) as FamilyInstance;
@@ -380,7 +380,7 @@ namespace RevitAIAssistant.Services
                     var familyName = command.Parameters["family_name"].ToString();
                     var familyType = command.Parameters["family_type"].ToString();
                     var location = ExtractLocation(command.Parameters["location"]);
-                    var levelId = new ElementId(Convert.ToInt32(command.Parameters["level_id"]));
+                    var levelId = new ElementId(Convert.ToInt64(command.Parameters["level_id"]));
 
                     // Find family symbol
                     var symbol = FindFamilySymbol(document, familyName, familyType);
@@ -466,16 +466,16 @@ namespace RevitAIAssistant.Services
                     var systemName = command.Parameters["system_name"].ToString();
                     var systemType = command.Parameters["system_type"].ToString();
                     var equipmentIds = (command.Parameters["equipment_ids"] as List<object>)
-                        ?.Select(id => new ElementId(Convert.ToInt32(id)))
+                        ?.Select(id => new ElementId(Convert.ToInt64(id)))
                         .ToList() ?? new List<ElementId>();
 
                     // Get mechanical system type
                     var mechanicalSystemType = systemType.ToLower() switch
                     {
-                        "supply air" => MechanicalSystemType.SupplyAir,
-                        "return air" => MechanicalSystemType.ReturnAir,
-                        "exhaust air" => MechanicalSystemType.ExhaustAir,
-                        _ => MechanicalSystemType.SupplyAir
+                        "supply air" => MechanicalSystemType.DataSupplyAir,
+                        "return air" => MechanicalSystemType.DataReturnAir,
+                        "exhaust air" => MechanicalSystemType.DataExhaustAir,
+                        _ => MechanicalSystemType.DataSupplyAir
                     };
 
                     // Create mechanical system
@@ -520,7 +520,7 @@ namespace RevitAIAssistant.Services
                     var systemName = command.Parameters["system_name"].ToString();
                     var systemType = command.Parameters["system_type"].ToString();
                     var equipmentIds = (command.Parameters["equipment_ids"] as List<object>)
-                        ?.Select(id => new ElementId(Convert.ToInt32(id)))
+                        ?.Select(id => new ElementId(Convert.ToInt64(id)))
                         .ToList() ?? new List<ElementId>();
 
                     // Create piping system
@@ -565,7 +565,7 @@ namespace RevitAIAssistant.Services
                 {
                     transaction.Start();
 
-                    var elementId = new ElementId(Convert.ToInt32(command.Parameters["element_id"]));
+                    var elementId = new ElementId(Convert.ToInt64(command.Parameters["element_id"]));
                     var parameterName = command.Parameters["parameter_name"].ToString();
                     var parameterValue = command.Parameters["parameter_value"];
 
@@ -687,7 +687,7 @@ namespace RevitAIAssistant.Services
                         parameter.Set(value.ToString());
                         break;
                     case StorageType.ElementId:
-                        parameter.Set(new ElementId(Convert.ToInt32(value)));
+                        parameter.Set(new ElementId(Convert.ToInt64(value)));
                         break;
                 }
 
