@@ -43,8 +43,15 @@ namespace RevitAIAssistant.Models
             {
                 _richContent = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(HasRichContent));
+                OnPropertyChanged(nameof(RichContentText));
             }
         }
+        
+        public bool HasRichContent => RichContent != null;
+        
+        public string RichContentText => RichContent?.ToString() ?? string.Empty;
+        
         public DateTime Timestamp { get; set; }
         public bool IsTyping 
         { 
