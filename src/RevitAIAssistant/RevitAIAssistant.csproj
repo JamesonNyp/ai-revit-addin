@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <UseWPF>true</UseWPF>
@@ -42,7 +42,7 @@
   <ItemGroup>
     <!-- Embedded Resources -->
     <Resource Include="Resources\Icons\*.png" />
-    <Page Include="**\*.xaml" Exclude="App.xaml">
+    <Page Include="**\*.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
