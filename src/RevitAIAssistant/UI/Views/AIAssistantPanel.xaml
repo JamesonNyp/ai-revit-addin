@@ -23,7 +23,7 @@
             
             <!-- Chat message data templates -->
             <DataTemplate x:Key="UserMessageTemplate">
-            <Border Background="{Binding Path=DataContext.Theme.UserBubbleBackground, 
+                <Border Background="{Binding Path=DataContext.Theme.UserBubbleBackground, 
                                        RelativeSource={RelativeSource AncestorType=UserControl}, 
                                        Converter={StaticResource ColorToBrushConverter}}"
                     CornerRadius="12,12,4,12"
