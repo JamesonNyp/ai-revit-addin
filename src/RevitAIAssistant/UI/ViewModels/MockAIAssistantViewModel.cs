@@ -24,16 +24,22 @@ namespace RevitAIAssistant.UI.ViewModels
     public class MockAIAssistantViewModel : INotifyPropertyChanged
     {
         private readonly MockAIService _mockService;
+        private readonly MockOrchestrationService _orchestrationService;
         private string _inputText = string.Empty;
         private bool _isTaskExecuting;
         private ActiveTaskInfo? _activeTask;
         private ThemeColors _theme;
         private EngineeringContextViewModel _currentContext;
         private int _taskStatusCallCount = 0;
+        private MockOrchestrationService.OrchestrationProcess? _activeProcess;
 
         public MockAIAssistantViewModel()
         {
             _mockService = new MockAIService();
+            _orchestrationService = new MockOrchestrationService();
+            
+            // Subscribe to orchestration updates
+            _orchestrationService.ProcessUpdated += OnOrchestrationProcessUpdated;
             
             // Initialize theme
             ThemeManager.Initialize();
@@ -235,19 +241,26 @@ namespace RevitAIAssistant.UI.ViewModels
                 IsTaskExecuting = true;
                 _taskStatusCallCount = 0;
                 
+                // Start orchestration process
+                var query = Messages.LastOrDefault(m => m.Role == MessageRole.User)?.Content ?? "Execute engineering task";
+                _activeProcess = await _orchestrationService.StartProcessAsync(query);
+                
                 // Create active task tracker
                 ActiveTask = new ActiveTaskInfo
                 {
                     TaskId = taskId,
-                    ExecutionId = Guid.NewGuid().ToString(),
-                    Title = "Sizing electrical service...",
+                    ExecutionId = _activeProcess.ProcessId,
+                    Title = GetProcessTitle(_activeProcess.ProcessType),
                     Progress = 0,
-                    CurrentStep = "Initializing...",
+                    CurrentStep = "Initializing orchestration...",
                     TimeRemaining = "Calculating..."
                 };
+                
+                // Add orchestration message
+                AddOrchestrationMessage(_activeProcess);
 
-                // Start monitoring execution
-                await MonitorTaskExecutionAsync(ActiveTask.ExecutionId);
+                // Start monitoring orchestration
+                await MonitorOrchestrationAsync();
             }
             catch (Exception ex)
             {
@@ -257,6 +270,7 @@ namespace RevitAIAssistant.UI.ViewModels
             {
                 IsTaskExecuting = false;
                 ActiveTask = null;
+                _activeProcess = null;
             }
         }
 
@@ -394,6 +408,127 @@ namespace RevitAIAssistant.UI.ViewModels
         private void OnThemeChanged(object? sender, ThemeChangedEventArgs e)
         {
             Theme = e.NewTheme;
+        }
+
+        private string GetProcessTitle(string processType)
+        {
+            return processType switch
+            {
+                "electrical_load_calculation" => "Electrical Load Calculation",
+                "mechanical_equipment_sizing" => "Mechanical Equipment Sizing",
+                "code_compliance_review" => "Code Compliance Review",
+                _ => "Engineering Task Execution"
+            };
+        }
+
+        private void AddOrchestrationMessage(MockOrchestrationService.OrchestrationProcess process)
+        {
+            var orchestrationContent = new OrchestrationProgressContent
+            {
+                Process = process
+            };
+
+            var message = new ChatMessage
+            {
+                Role = MessageRole.Assistant,
+                RichContent = orchestrationContent,
+                Timestamp = DateTime.Now
+            };
+            Messages.Add(message);
+        }
+
+        private async Task MonitorOrchestrationAsync()
+        {
+            // The actual monitoring is now handled by the OnOrchestrationProcessUpdated event handler
+            // This method just waits for completion
+            if (_activeProcess == null) return;
+
+            while (IsTaskExecuting && _activeProcess.OverallStatus != "completed")
+            {
+                await Task.Delay(500); // Just wait for completion
+            }
+        }
+
+        private void AddCompletionMessage(MockOrchestrationService.OrchestrationProcess process)
+        {
+            AddSystemMessage("✅ Task completed successfully!", MessageType.Success);
+
+            // Show summary of results
+            var completedSteps = process.Steps.Where(s => s.Status == "completed" && !string.IsNullOrEmpty(s.Result));
+            if (completedSteps.Any())
+            {
+                var resultsContent = new OrchestrationResultsContent
+                {
+                    ProcessType = GetProcessTitle(process.ProcessType),
+                    ExecutionTime = DateTime.Now - process.StartTime,
+                    Steps = completedSteps.ToList()
+                };
+
+                var resultsMessage = new ChatMessage
+                {
+                    Role = MessageRole.Assistant,
+                    RichContent = resultsContent,
+                    Timestamp = DateTime.Now
+                };
+                Messages.Add(resultsMessage);
+            }
+        }
+
+        private void OnOrchestrationProcessUpdated(object? sender, MockOrchestrationService.OrchestrationUpdateEventArgs e)
+        {
+            if (e.Process == null || e.Process.ProcessId != _activeProcess?.ProcessId) return;
+
+            // Update the active process
+            _activeProcess = e.Process;
+
+            // Update the orchestration message in the chat
+            var orchestrationMessage = Messages.LastOrDefault(m => m.RichContent is OrchestrationProgressContent);
+            if (orchestrationMessage != null)
+            {
+                // Force UI update by reassigning the content
+                orchestrationMessage.RichContent = new OrchestrationProgressContent { Process = _activeProcess };
+                orchestrationMessage.OnPropertyChanged(nameof(ChatMessage.RichContent));
+            }
+
+            // Update active task info
+            if (ActiveTask != null && _activeProcess != null)
+            {
+                ActiveTask.Progress = _activeProcess.OverallProgress;
+                
+                // Find current running step
+                var currentStep = _activeProcess.Steps.FirstOrDefault(s => s.Status == "running");
+                if (currentStep != null)
+                {
+                    ActiveTask.CurrentStep = $"{currentStep.Name}: {currentStep.Description}";
+                    
+                    // Show sub-task progress if available
+                    if (currentStep.Progress > 0 && currentStep.Progress < 100 && currentStep.SubTasks.Count > 0)
+                    {
+                        var subTaskIndex = Math.Min((int)(currentStep.Progress / 100.0 * currentStep.SubTasks.Count), currentStep.SubTasks.Count - 1);
+                        var currentSubTask = currentStep.SubTasks.ElementAtOrDefault(subTaskIndex);
+                        if (!string.IsNullOrEmpty(currentSubTask))
+                        {
+                            ActiveTask.CurrentStep = $"{currentStep.Name}: {currentSubTask}";
+                        }
+                    }
+                }
+
+                // Update time remaining
+                if (_activeProcess.EstimatedEndTime.HasValue)
+                {
+                    var remaining = _activeProcess.EstimatedEndTime.Value - DateTime.Now;
+                    ActiveTask.TimeRemaining = remaining.TotalSeconds > 0 
+                        ? FormatTimeRemaining((int)remaining.TotalSeconds)
+                        : "Completing...";
+                }
+            }
+
+            // Check for completion
+            if (_activeProcess.OverallStatus == "completed" && IsTaskExecuting)
+            {
+                IsTaskExecuting = false;
+                AddCompletionMessage(_activeProcess);
+            }
         }
 
         #endregion

@@ -54,6 +54,12 @@ Files installed:
 3. **Mock UI Features to Test**
    - Chat interface with message input
    - Mock responses simulating AI engineering assistant
+   - **Multi-step orchestration visualization (2-4 minute process)**
+     - Real-time progress updates for each step
+     - Agent type indicators (orchestrator, specialist, QA, etc.)
+     - Sub-task progress tracking
+     - Time remaining estimates
+     - Detailed results summary
    - Theme switching (follows Revit's theme)
    - Command queue display
    - Task status indicators
@@ -61,10 +67,14 @@ Files installed:
 
 4. **Test Scenarios**
    - Type various engineering queries:
-     - "Calculate electrical load for the selected panel"
-     - "Size mechanical equipment for this space"
-     - "Check code compliance"
-   - Observe mock responses and UI behavior
+     - "Calculate electrical load for the selected panel" (triggers multi-step orchestration)
+     - "Size mechanical equipment for this space" (triggers multi-step orchestration)
+     - "Check code compliance" (triggers multi-step orchestration)
+   - Observe the orchestration process:
+     - Watch the real-time progress updates
+     - See different agents handling different steps
+     - Monitor sub-task completion within each step
+     - Review detailed results at completion
    - Test scrolling in chat history
    - Try resizing the dockable panel
    - Test with different Revit themes (light/dark)
