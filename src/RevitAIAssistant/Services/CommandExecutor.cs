@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
 using Autodesk.Revit.DB.Mechanical;
+using Autodesk.Revit.DB.Plumbing;
 using Autodesk.Revit.UI;
 using Microsoft.Extensions.Logging;
 using RevitAIAssistant.Models;
@@ -472,10 +473,10 @@ namespace RevitAIAssistant.Services
                     // Get mechanical system type
                     var mechanicalSystemType = systemType.ToLower() switch
                     {
-                        "supply air" => MechanicalSystemType.DataSupplyAir,
-                        "return air" => MechanicalSystemType.DataReturnAir,
-                        "exhaust air" => MechanicalSystemType.DataExhaustAir,
-                        _ => MechanicalSystemType.DataSupplyAir
+                        "supply air" => MechanicalSystemType.SupplyAir,
+                        "return air" => MechanicalSystemType.ReturnAir,
+                        "exhaust air" => MechanicalSystemType.ExhaustAir,
+                        _ => MechanicalSystemType.SupplyAir
                     };
 
                     // Create mechanical system
@@ -621,7 +622,7 @@ namespace RevitAIAssistant.Services
                         .ToList() ?? new List<string>();
 
                     // Get category
-                    var category = GetCategoryByName(categoryName);
+                    var category = GetCategoryByName(categoryName, document);
                     if (category == null)
                     {
                         result.Success = false;
@@ -721,7 +722,7 @@ namespace RevitAIAssistant.Services
             return XYZ.Zero;
         }
 
-        private Category GetCategoryByName(string categoryName)
+        private Category? GetCategoryByName(string categoryName, Document document)
         {
             // Map common category names to BuiltInCategory
             var categoryMap = new Dictionary<string, BuiltInCategory>
@@ -736,7 +737,7 @@ namespace RevitAIAssistant.Services
 
             if (categoryMap.TryGetValue(categoryName, out var builtInCategory))
             {
-                return Category.GetCategory(Document, builtInCategory);
+                return Category.GetCategory(document, builtInCategory);
             }
 
             return null;

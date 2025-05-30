@@ -15,6 +15,7 @@ using RevitAIAssistant.Services;
 using RevitAIAssistant.UI.Commands;
 using RevitAIAssistant.UI.Themes;
 using RevitAIAssistant.UI.Dialogs;
+using RevitAIAssistant.UI.Controls;
 
 namespace RevitAIAssistant.UI.ViewModels
 {
@@ -487,7 +488,8 @@ namespace RevitAIAssistant.UI.ViewModels
             {
                 // Force UI update by reassigning the content
                 orchestrationMessage.RichContent = new OrchestrationProgressContent { Process = _activeProcess };
-                orchestrationMessage.OnPropertyChanged(nameof(ChatMessage.RichContent));
+                // Trigger property changed notification
+                orchestrationMessage.RichContent = orchestrationMessage.RichContent;
             }
 
             // Update active task info

@@ -15,6 +15,7 @@ using RevitAIAssistant.Services;
 using RevitAIAssistant.UI.Commands;
 using RevitAIAssistant.UI.Themes;
 using RevitAIAssistant.UI.Dialogs;
+using RevitAIAssistant.UI.Controls;
 
 namespace RevitAIAssistant.UI.ViewModels
 {
