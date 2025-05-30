@@ -26,11 +26,11 @@ The AI Revit Add-in is a sophisticated engineering assistant that integrates dir
 
 ### Technology Stack
 
-- **Framework**: .NET 6.0 Windows
+- **Framework**: .NET 8.0 Windows
 - **UI**: WPF (Windows Presentation Foundation)
 - **Revit API**: Autodesk Revit 2025 SDK
 - **HTTP Client**: Microsoft.Extensions.Http
-- **Serialization**: Newtonsoft.Json
+- **Serialization**: Newtonsoft.Json / System.Text.Json
 - **Testing**: xUnit, Moq
 
 ## Project Structure
@@ -52,7 +52,7 @@ ai-revit-addin/
 
 1. **Visual Studio 2022** or later
    - .NET desktop development workload
-   - .NET 6.0 SDK
+   - .NET 8.0 SDK
 
 2. **Autodesk Revit 2025**
    - Developer mode enabled
