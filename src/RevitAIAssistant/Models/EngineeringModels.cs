@@ -9,12 +9,15 @@ namespace RevitAIAssistant.Models
     /// </summary>
     public class EngineeringContext
     {
-        public ProjectInfo ProjectInfo { get; set; } = new();
+        public ProjectDetails ProjectInfo { get; set; } = new();
         public List<ElementInfo> SelectedElements { get; set; } = new();
         public ViewInfo ActiveView { get; set; } = new();
         public List<SystemInfo> VisibleSystems { get; set; } = new();
         public EngineerInfo CurrentEngineer { get; set; } = new();
         public List<string> ApplicableCodes { get; set; } = new();
+        public string ProjectName { get; set; } = string.Empty;
+        public string Discipline { get; set; } = string.Empty;
+        public string Phase { get; set; } = string.Empty;
         public string ActiveSystem { get; set; } = string.Empty;
         public Dictionary<string, object> AdditionalData { get; set; } = new();
     }
@@ -22,7 +25,7 @@ namespace RevitAIAssistant.Models
     /// <summary>
     /// Detailed project information
     /// </summary>
-    public class ProjectInfo
+    public class ProjectDetails
     {
         public string Name { get; set; } = string.Empty;
         public string Number { get; set; } = string.Empty;
@@ -258,6 +261,12 @@ namespace RevitAIAssistant.Models
         ConditionallyApproved
     }
 
+    /// <summary>
+    /// Command execution result
+    /// </summary>
+    public class CommandExecutionResult
+    {
+        public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
         public List<ElementId> CreatedElements { get; set; } = new();
         public List<ElementId> ModifiedElements { get; set; } = new();

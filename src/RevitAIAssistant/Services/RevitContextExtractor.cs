@@ -78,9 +78,9 @@ namespace RevitAIAssistant.Services
         /// <summary>
         /// Extract project information
         /// </summary>
-        private ProjectInfo ExtractProjectInfo(Document document)
+        private ProjectDetails ExtractProjectInfo(Document document)
         {
-            var projectInfo = new ProjectInfo();
+            var projectInfo = new ProjectDetails();
 
             try
             {
@@ -580,7 +580,7 @@ namespace RevitAIAssistant.Services
             }
         }
 
-        private object GetParameterValueAsObject(Parameter parameter)
+        private object? GetParameterValueAsObject(Parameter parameter)
         {
             if (!parameter.HasValue)
                 return null;
