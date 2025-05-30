@@ -16,10 +16,17 @@ namespace RevitAIAssistant.Models
         public EngineerInfo CurrentEngineer { get; set; } = new();
         public List<string> ApplicableCodes { get; set; } = new();
         public string ProjectName { get; set; } = string.Empty;
+        public string ProjectNumber { get; set; } = string.Empty;
         public string Discipline { get; set; } = string.Empty;
         public string Phase { get; set; } = string.Empty;
         public string ActiveSystem { get; set; } = string.Empty;
         public Dictionary<string, object> AdditionalData { get; set; } = new();
+        public Dictionary<string, object> Metadata { get; set; } = new();
+        public BuildingInfo? BuildingInfo { get; set; }
+        public List<SystemInfo> Systems { get; set; } = new();
+        public ViewContext? CurrentView { get; set; }
+        public List<string> Standards { get; set; } = new();
+        public DateTime ExtractedAt { get; set; } = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -83,9 +90,13 @@ namespace RevitAIAssistant.Models
     {
         public ElementId Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string SystemName { get; set; } = string.Empty;
         public string SystemType { get; set; } = string.Empty;
         public string SystemClassification { get; set; } = string.Empty;
+        public string? Description { get; set; }
         public List<ElementId> Components { get; set; } = new();
+        public List<string> ConnectedSystems { get; set; } = new();
+        public Dictionary<string, object> Properties { get; set; } = new();
         
         // Electrical systems
         public double? TotalConnectedLoad { get; set; } // VA
@@ -365,5 +376,61 @@ namespace RevitAIAssistant.Models
         public string Type { get; set; } = string.Empty;
         public Dictionary<string, object> ReviewData { get; set; } = new();
         public List<string> RequiredActions { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Building information
+    /// </summary>
+    public class BuildingInfo
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public double? GrossArea { get; set; }
+        public int? NumberOfFloors { get; set; }
+        public string? BuildingType { get; set; }
+        public string? OccupancyType { get; set; }
+    }
+
+    /// <summary>
+    /// View context information
+    /// </summary>
+    public class ViewContext
+    {
+        public string ViewName { get; set; } = string.Empty;
+        public string ViewType { get; set; } = string.Empty;
+        public string? ViewTemplate { get; set; }
+        public double? Scale { get; set; }
+        public string? DetailLevel { get; set; }
+        public BoundingBox? ViewBounds { get; set; }
+    }
+
+    /// <summary>
+    /// Custom bounding box class
+    /// </summary>
+    public class BoundingBox
+    {
+        public Point3D Min { get; set; } = new();
+        public Point3D Max { get; set; } = new();
+    }
+
+    /// <summary>
+    /// 3D point representation
+    /// </summary>
+    public class Point3D
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
+
+    /// <summary>
+    /// Command validation criteria
+    /// </summary>
+    public class CommandValidation
+    {
+        public List<string> RequiredParameters { get; set; } = new();
+        public List<string> PreConditions { get; set; } = new();
+        public List<string> PostConditions { get; set; } = new();
+        public string? ValidationMethod { get; set; }
     }
 }
