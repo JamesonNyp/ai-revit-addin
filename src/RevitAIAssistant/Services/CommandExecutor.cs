@@ -484,7 +484,11 @@ namespace RevitAIAssistant.Services
                         // Add remaining equipment to the system
                         for (int i = 1; i < equipmentIds.Count; i++)
                         {
-                            mechanicalSystem.Add(equipmentIds[i]);
+                            var equipment = document.GetElement(equipmentIds[i]) as FamilyInstance;
+                            if (equipment?.MEPModel?.ConnectorManager != null)
+                            {
+                                mechanicalSystem.Add(equipment.MEPModel.ConnectorManager.Connectors);
+                            }
                         }
                     }
                     else
@@ -547,7 +551,11 @@ namespace RevitAIAssistant.Services
                         // Add remaining equipment to the system
                         for (int i = 1; i < equipmentIds.Count; i++)
                         {
-                            pipingSystem.Add(equipmentIds[i]);
+                            var equipment = document.GetElement(equipmentIds[i]) as FamilyInstance;
+                            if (equipment?.MEPModel?.ConnectorManager != null)
+                            {
+                                pipingSystem.Add(equipment.MEPModel.ConnectorManager.Connectors);
+                            }
                         }
                     }
                     else
