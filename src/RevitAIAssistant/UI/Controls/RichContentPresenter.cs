@@ -917,38 +917,4 @@ namespace RevitAIAssistant.UI.Controls
             return stackPanel;
         }
     }
-
-    #region Content Types
-
-    public class ExecutionPlanContent
-    {
-        public EngineeringExecutionPlan Plan { get; set; } = new();
-        public Action? OnApprove { get; set; }
-        public Action? OnReject { get; set; }
-    }
-
-    public class CalculationResultsContent
-    {
-        public List<CalculationResult> Calculations { get; set; } = new();
-    }
-
-    public class DocumentationContent
-    {
-        public EngineeringDocumentation Documentation { get; set; } = new();
-        public Action<string>? OnExport { get; set; }
-    }
-
-    public class OrchestrationProgressContent
-    {
-        public MockOrchestrationService.OrchestrationProcess Process { get; set; } = new();
-    }
-
-    public class OrchestrationResultsContent
-    {
-        public string ProcessType { get; set; } = string.Empty;
-        public TimeSpan ExecutionTime { get; set; }
-        public List<MockOrchestrationService.OrchestrationStep> Steps { get; set; } = new();
-    }
-
-    #endregion
 }
