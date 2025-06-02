@@ -209,9 +209,19 @@
                         IsEnabled="{Binding CanSendMessage}"
                         Margin="8,0,0,0"
                         Padding="12,8"
-                        Background="#006F97"
-                        Foreground="White"
                         BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#006F97"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#3B4453"/>
+                                    <Setter Property="Foreground" Value="#7A7A7A"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Send" VerticalAlignment="Center"/>

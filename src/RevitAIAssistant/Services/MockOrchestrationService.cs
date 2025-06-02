@@ -296,7 +296,14 @@ namespace RevitAIAssistant.Services
                     {
                         float interpolation = (float)k / updateSteps;
                         step.Progress = startProgress + (int)(progressSteps * interpolation);
+                        
+                        // Update overall progress
+                        process.OverallProgress = CalculateOverallProgress(process);
+                        
                         OnProcessUpdated(process, step);
+                        
+                        // Debug log
+                        System.Diagnostics.Debug.WriteLine($"Step: {step.Name}, Progress: {step.Progress}%, Overall: {process.OverallProgress}%");
                         
                         if (k < updateSteps)
                         {
@@ -449,6 +456,27 @@ namespace RevitAIAssistant.Services
             public string ProcessId { get; set; } = "";
             public OrchestrationStep? UpdatedStep { get; set; }
             public OrchestrationProcess? Process { get; set; }
+        }
+
+        private int CalculateOverallProgress(OrchestrationProcess process)
+        {
+            if (process.Steps.Count == 0) return 0;
+            
+            int completedSteps = process.Steps.Count(s => s.Status == "completed");
+            int runningStepProgress = 0;
+            
+            var runningStep = process.Steps.FirstOrDefault(s => s.Status == "running");
+            if (runningStep != null)
+            {
+                runningStepProgress = runningStep.Progress;
+            }
+            
+            // Calculate weighted progress
+            float stepWeight = 100f / process.Steps.Count;
+            float completedProgress = completedSteps * stepWeight;
+            float currentStepProgress = (runningStepProgress / 100f) * stepWeight;
+            
+            return (int)(completedProgress + currentStepProgress);
         }
 
         private void OnProcessUpdated(OrchestrationProcess process, OrchestrationStep? step = null)

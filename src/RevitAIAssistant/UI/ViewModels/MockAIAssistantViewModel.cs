@@ -487,15 +487,31 @@ namespace RevitAIAssistant.UI.ViewModels
             // Update the active process
             _activeProcess = e.Process;
 
-            // Update the orchestration message in the chat
-            var orchestrationMessage = Messages.LastOrDefault(m => m.RichContent is OrchestrationProgressContent);
-            if (orchestrationMessage != null)
+            // Ensure we're on the UI thread
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
             {
-                // Create a new content instance to force UI update
-                var newContent = new OrchestrationProgressContent { Process = _activeProcess };
-                orchestrationMessage.RichContent = null; // Clear first
-                orchestrationMessage.RichContent = newContent; // Then set new content
-            }
+                // Update the orchestration message in the chat
+                var orchestrationMessage = Messages.LastOrDefault(m => m.RichContent is OrchestrationProgressContent);
+                if (orchestrationMessage != null)
+                {
+                    // Force the RichContentPresenter to recreate the visual tree by removing and re-adding the message
+                    var messageIndex = Messages.IndexOf(orchestrationMessage);
+                    if (messageIndex >= 0)
+                    {
+                        // Create a new message with updated content
+                        var updatedMessage = new ChatMessage
+                        {
+                            Role = orchestrationMessage.Role,
+                            Content = orchestrationMessage.Content,
+                            RichContent = new OrchestrationProgressContent { Process = _activeProcess },
+                            Timestamp = orchestrationMessage.Timestamp
+                        };
+                        
+                        // Replace the message
+                        Messages[messageIndex] = updatedMessage;
+                    }
+                }
+            });
 
             // Update active task info
             if (ActiveTask != null && _activeProcess != null)
