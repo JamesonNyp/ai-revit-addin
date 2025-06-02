@@ -100,10 +100,12 @@
     <PropertyGroup>
       <RevitAddinsFolder>$(AppData)\Autodesk\Revit\Addins\2025</RevitAddinsFolder>
     </PropertyGroup>
+    <ItemGroup>
+      <AddinFiles Include="$(OutputPath)*.dll" Exclude="$(OutputPath)RevitAPI.dll;$(OutputPath)RevitAPIUI.dll" />
+    </ItemGroup>
     <Message Text="Copying add-in files to Revit Addins folder..." Importance="high" />
     <Copy SourceFiles="$(OutputPath)RevitAIAssistant.dll" DestinationFolder="$(RevitAddinsFolder)" />
     <Copy SourceFiles="$(OutputPath)RevitAIAssistant.addin" DestinationFolder="$(RevitAddinsFolder)" />
-    <Copy SourceFiles="$(OutputPath)*.dll" DestinationFolder="$(RevitAddinsFolder)" 
-          Condition="'%(Filename)' != 'RevitAPI' And '%(Filename)' != 'RevitAPIUI'" />
+    <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(RevitAddinsFolder)" />
   </Target>
 </Project>
