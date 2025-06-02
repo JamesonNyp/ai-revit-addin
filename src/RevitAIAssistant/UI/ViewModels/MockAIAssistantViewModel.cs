@@ -127,12 +127,14 @@ namespace RevitAIAssistant.UI.ViewModels
 
         public bool HasContext => CurrentContext.HasContent;
         public bool CanSend => !string.IsNullOrWhiteSpace(InputText) && !IsTaskExecuting;
+        public bool CanSendMessage => CanSend; // Alias for XAML binding compatibility
 
         #endregion
 
         #region Commands
 
         public ICommand SendCommand { get; }
+        public ICommand SendMessageCommand => SendCommand; // Alias for XAML binding compatibility
         public ICommand QuickActionCommand { get; }
         public ICommand ShowSettingsCommand { get; }
 
