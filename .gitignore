@@ -405,3 +405,6 @@ FodyWeavers.xsd
 *.rte
 *.rtf
 *.rws
+
+# SDK Reference - Local copy of Revit SDK
+sdk-reference/
