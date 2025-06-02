@@ -86,14 +86,14 @@ namespace RevitAIAssistant.UI.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(titleBlock);
 
             // Plan summary
             var summaryBorder = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(25, theme.AccentColor.R, theme.AccentColor.G, theme.AccentColor.B)),
+                Background = new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)), // Slightly lighter than parent #3B4453
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(12),
                 Margin = new Thickness(0, 0, 0, 12)
@@ -109,7 +109,7 @@ namespace RevitAIAssistant.UI.Controls
                 FontWeight = FontWeights.SemiBold,
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             summaryPanel.Children.Add(objectiveBlock);
 
@@ -137,7 +137,7 @@ namespace RevitAIAssistant.UI.Controls
                     Text = "Execution Strategy",
                     FontWeight = FontWeights.SemiBold,
                     Margin = new Thickness(0, 0, 0, 4),
-                    Foreground = new SolidColorBrush(theme.PrimaryText)
+                    Foreground = Brushes.White
                 };
                 stackPanel.Children.Add(strategyBlock);
 
@@ -157,7 +157,7 @@ namespace RevitAIAssistant.UI.Controls
                 Text = "Execution Steps",
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(tasksBlock);
 
@@ -165,7 +165,8 @@ namespace RevitAIAssistant.UI.Controls
             {
                 var taskBorder = new Border
                 {
-                    BorderBrush = new SolidColorBrush(theme.BorderColor),
+                    Background = new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)), // Slightly lighter than parent
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(255, 70, 78, 91)),
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(6),
                     Margin = new Thickness(0, 0, 0, 8),
@@ -191,7 +192,7 @@ namespace RevitAIAssistant.UI.Controls
                 {
                     Text = task.Title,
                     FontWeight = FontWeights.SemiBold,
-                    Foreground = new SolidColorBrush(theme.PrimaryText)
+                    Foreground = Brushes.White
                 };
                 taskHeader.Children.Add(taskTitle);
 
@@ -316,7 +317,7 @@ namespace RevitAIAssistant.UI.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(titleBlock);
 
@@ -324,8 +325,8 @@ namespace RevitAIAssistant.UI.Controls
             {
                 var calcBorder = new Border
                 {
-                    Background = new SolidColorBrush(theme.CalculationBackground),
-                    BorderBrush = new SolidColorBrush(theme.BorderColor),
+                    Background = new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)), // Slightly lighter than parent
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(255, 70, 78, 91)),
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(8),
                     Padding = new Thickness(12),
@@ -341,7 +342,7 @@ namespace RevitAIAssistant.UI.Controls
                     Text = calc.Name,
                     FontWeight = FontWeights.SemiBold,
                     Margin = new Thickness(0, 0, 0, 4),
-                    Foreground = new SolidColorBrush(theme.PrimaryText)
+                    Foreground = Brushes.White
                 };
                 calcPanel.Children.Add(nameBlock);
 
@@ -368,14 +369,14 @@ namespace RevitAIAssistant.UI.Controls
                     {
                         Text = $"{step.StepNumber}. {step.Description}",
                         Margin = new Thickness(0, 0, 0, 2),
-                        Foreground = new SolidColorBrush(theme.PrimaryText)
+                        Foreground = Brushes.White
                     };
                     stepPanel.Children.Add(stepDesc);
 
                     // Formula
                     var formulaBorder = new Border
                     {
-                        Background = new SolidColorBrush(theme.CodeBackground),
+                        Background = new SolidColorBrush(Color.FromArgb(255, 30, 36, 45)), // Darker for code
                         CornerRadius = new CornerRadius(4),
                         Padding = new Thickness(8, 4, 8, 4),
                         Margin = new Thickness(16, 2, 0, 2)
@@ -406,7 +407,7 @@ namespace RevitAIAssistant.UI.Controls
                 // Final results
                 var resultsBorder = new Border
                 {
-                    Background = new SolidColorBrush(Color.FromArgb(25, theme.SuccessColor.R, theme.SuccessColor.G, theme.SuccessColor.B)),
+                    Background = new SolidColorBrush(Color.FromArgb(255, 45, 70, 55)), // Green-tinted offset
                     CornerRadius = new CornerRadius(4),
                     Padding = new Thickness(8),
                     Margin = new Thickness(0, 8, 0, 0)
@@ -420,7 +421,7 @@ namespace RevitAIAssistant.UI.Controls
                     Text = "Results:",
                     FontWeight = FontWeights.SemiBold,
                     Margin = new Thickness(0, 0, 0, 4),
-                    Foreground = new SolidColorBrush(theme.PrimaryText)
+                    Foreground = Brushes.White
                 };
                 resultsPanel.Children.Add(resultsTitle);
 
@@ -429,7 +430,7 @@ namespace RevitAIAssistant.UI.Controls
                     var resultText = new TextBlock
                     {
                         Text = $"{result.Key}: {result.Value:F2} {calc.Units}",
-                        Foreground = new SolidColorBrush(theme.PrimaryText)
+                        Foreground = Brushes.White
                     };
                     resultsPanel.Children.Add(resultText);
                 }
@@ -468,7 +469,7 @@ namespace RevitAIAssistant.UI.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(titleBlock);
 
@@ -494,8 +495,8 @@ namespace RevitAIAssistant.UI.Controls
             // Preview of content
             var previewBorder = new Border
             {
-                Background = new SolidColorBrush(theme.CodeBackground),
-                BorderBrush = new SolidColorBrush(theme.BorderColor),
+                Background = new SolidColorBrush(Color.FromArgb(255, 30, 36, 45)), // Darker for code preview
+                BorderBrush = new SolidColorBrush(Color.FromArgb(255, 70, 78, 91)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(4),
                 Padding = new Thickness(12),
@@ -575,7 +576,7 @@ namespace RevitAIAssistant.UI.Controls
             {
                 Text = label,
                 Margin = new Thickness(0, 0, 8, 2),
-                Foreground = new SolidColorBrush(theme.SecondaryText)
+                Foreground = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200))
             };
             Grid.SetRow(labelBlock, row);
             Grid.SetColumn(labelBlock, 0);
@@ -585,7 +586,7 @@ namespace RevitAIAssistant.UI.Controls
             {
                 Text = value,
                 FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             Grid.SetRow(valueBlock, row);
             Grid.SetColumn(valueBlock, 1);
@@ -604,14 +605,14 @@ namespace RevitAIAssistant.UI.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(titleBlock);
 
             // Overall progress
             var progressBorder = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(25, theme.AccentColor.R, theme.AccentColor.G, theme.AccentColor.B)),
+                Background = new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)), // Slightly lighter than parent
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(12),
                 Margin = new Thickness(0, 0, 0, 12)
@@ -624,7 +625,7 @@ namespace RevitAIAssistant.UI.Controls
             var progressBarBorder = new Border
             {
                 Height = 8,
-                Background = new SolidColorBrush(theme.SecondaryButtonBackground),
+                Background = new SolidColorBrush(Color.FromArgb(255, 30, 36, 45)), // Darker background for contrast
                 CornerRadius = new CornerRadius(4),
                 Margin = new Thickness(0, 0, 0, 8)
             };
@@ -645,7 +646,7 @@ namespace RevitAIAssistant.UI.Controls
             {
                 Text = $"Overall Progress: {content.Process.OverallProgress}%",
                 FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             progressPanel.Children.Add(progressText);
 
@@ -657,7 +658,7 @@ namespace RevitAIAssistant.UI.Controls
                 Text = "Execution Steps",
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(stepsBlock);
 
@@ -675,9 +676,9 @@ namespace RevitAIAssistant.UI.Controls
                 // Set background based on status
                 stepBorder.Background = step.Status switch
                 {
-                    "completed" => new SolidColorBrush(Color.FromArgb(25, theme.SuccessColor.R, theme.SuccessColor.G, theme.SuccessColor.B)),
-                    "running" => new SolidColorBrush(Color.FromArgb(25, theme.AccentColor.R, theme.AccentColor.G, theme.AccentColor.B)),
-                    _ => new SolidColorBrush(theme.CardBackground)
+                    "completed" => new SolidColorBrush(Color.FromArgb(255, 45, 70, 55)), // Green-tinted
+                    "running" => new SolidColorBrush(Color.FromArgb(255, 45, 60, 80)), // Blue-tinted
+                    _ => new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)) // Default offset
                 };
 
                 var stepPanel = new StackPanel();
@@ -708,7 +709,7 @@ namespace RevitAIAssistant.UI.Controls
                 {
                     Text = step.Name,
                     FontWeight = FontWeights.SemiBold,
-                    Foreground = new SolidColorBrush(theme.PrimaryText),
+                    Foreground = Brushes.White,
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 stepNamePanel.Children.Add(stepName);
@@ -752,7 +753,7 @@ namespace RevitAIAssistant.UI.Controls
                     var stepProgressBorder = new Border
                     {
                         Height = 4,
-                        Background = new SolidColorBrush(theme.SecondaryButtonBackground),
+                        Background = new SolidColorBrush(Color.FromArgb(255, 30, 36, 45)), // Darker background for contrast
                         CornerRadius = new CornerRadius(2),
                         Margin = new Thickness(24, 8, 0, 4)
                     };
@@ -827,7 +828,7 @@ namespace RevitAIAssistant.UI.Controls
             // Summary
             var summaryBorder = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(25, theme.SuccessColor.R, theme.SuccessColor.G, theme.SuccessColor.B)),
+                Background = new SolidColorBrush(Color.FromArgb(255, 45, 70, 55)), // Green-tinted for success
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(12),
                 Margin = new Thickness(0, 0, 0, 12)
@@ -837,7 +838,7 @@ namespace RevitAIAssistant.UI.Controls
             {
                 Text = $"Total execution time: {content.ExecutionTime.TotalMinutes:F1} minutes",
                 FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             summaryBorder.Child = summaryText;
             stackPanel.Children.Add(summaryBorder);
@@ -848,7 +849,7 @@ namespace RevitAIAssistant.UI.Controls
                 Text = "Results Summary",
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 8),
-                Foreground = new SolidColorBrush(theme.PrimaryText)
+                Foreground = Brushes.White
             };
             stackPanel.Children.Add(resultsBlock);
 
@@ -858,8 +859,8 @@ namespace RevitAIAssistant.UI.Controls
 
                 var stepResultBorder = new Border
                 {
-                    Background = new SolidColorBrush(theme.CardBackground),
-                    BorderBrush = new SolidColorBrush(theme.BorderColor),
+                    Background = new SolidColorBrush(Color.FromArgb(255, 50, 58, 71)), // Slightly lighter than parent
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(255, 70, 78, 91)),
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(6),
                     Margin = new Thickness(0, 0, 0, 8),
@@ -890,7 +891,7 @@ namespace RevitAIAssistant.UI.Controls
                         Text = line.Trim(),
                         TextWrapping = TextWrapping.Wrap,
                         Margin = new Thickness(0, 2, 0, 0),
-                        Foreground = new SolidColorBrush(theme.PrimaryText)
+                        Foreground = Brushes.White
                     };
 
                     // Style based on content

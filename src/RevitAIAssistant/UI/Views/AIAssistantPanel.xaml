@@ -13,7 +13,7 @@
         
         <!-- Simple data templates without converters -->
         <DataTemplate x:Key="UserMessageTemplate">
-            <Border Background="#E3F2FD"
+            <Border Background="#006F97"
                     CornerRadius="12,12,4,12"
                     Margin="50,5,10,5"
                     Padding="12,8"
@@ -27,7 +27,7 @@
                     <TextBlock Grid.Row="0" 
                                Text="{Binding Content}" 
                                TextWrapping="Wrap"
-                               Foreground="#1565C0"/>
+                               Foreground="White"/>
                     
                     <TextBlock Grid.Row="1" 
                                Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
@@ -35,13 +35,13 @@
                                Opacity="0.8"
                                HorizontalAlignment="Right"
                                Margin="0,4,0,0"
-                               Foreground="#1565C0"/>
+                               Foreground="White"/>
                 </Grid>
             </Border>
         </DataTemplate>
 
         <DataTemplate x:Key="AssistantMessageTemplate">
-            <Border Background="#F5F5F5"
+            <Border Background="#3B4453"
                     CornerRadius="12,12,12,4"
                     Margin="10,5,50,5"
                     Padding="12,8"
@@ -56,7 +56,7 @@
                     <TextBlock Grid.Row="0" 
                                Text="{Binding Content}" 
                                TextWrapping="Wrap"
-                               Foreground="#424242"/>
+                               Foreground="White"/>
                     
                     <!-- Rich content display -->
                     <controls:RichContentPresenter Grid.Row="1" 
@@ -70,7 +70,7 @@
                                Opacity="0.8"
                                HorizontalAlignment="Left"
                                Margin="0,4,0,0"
-                               Foreground="#757575"/>
+                               Foreground="White"/>
                 </Grid>
             </Border>
         </DataTemplate>
