@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>AI Engineering Assistant</Name>
+    <Assembly>RevitAIAssistant.dll</Assembly>
+    <FullClassName>RevitAIAssistant.App</FullClassName>
+    <ClientId>7F8B8C5D-4A9E-4B8C-9D7E-6F8A9B5C7D4E</ClientId>
+    <VendorId>YourCompany</VendorId>
+    <VendorDescription>Your Company Name, www.yourcompany.com</VendorDescription>
+    <Description>AI-powered engineering assistant for Revit with intelligent task orchestration</Description>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+  </AddIn>
+</RevitAddIns>

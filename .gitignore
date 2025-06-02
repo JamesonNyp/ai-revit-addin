@@ -398,7 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Revit specific
-*.addin
+# *.addin - Need to include .addin manifest files
 *.bundle/
 *.rfa
 *.rvt
