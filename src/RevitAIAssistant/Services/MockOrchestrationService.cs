@@ -280,14 +280,33 @@ namespace RevitAIAssistant.Services
                 step.StartTime = DateTime.Now;
                 OnProcessUpdated(process, step);
 
-                // Simulate sub-task execution
+                // Simulate sub-task execution with gradual progress
+                int subTaskDelayMs = _random.Next(5000, 15000);
+                int progressUpdateInterval = 200; // Update every 200ms for smooth animation
+                
                 for (int j = 0; j < step.SubTasks.Count; j++)
                 {
-                    step.Progress = (int)((j + 1) / (float)step.SubTasks.Count * 100);
-                    OnProcessUpdated(process, step);
+                    int startProgress = (int)(j / (float)step.SubTasks.Count * 100);
+                    int endProgress = (int)((j + 1) / (float)step.SubTasks.Count * 100);
+                    int progressSteps = (endProgress - startProgress);
+                    int updateSteps = subTaskDelayMs / progressUpdateInterval;
                     
-                    // Random delay between 5-15 seconds per subtask
-                    await Task.Delay(_random.Next(5000, 15000));
+                    // Gradually increase progress for this subtask
+                    for (int k = 0; k <= updateSteps; k++)
+                    {
+                        float interpolation = (float)k / updateSteps;
+                        step.Progress = startProgress + (int)(progressSteps * interpolation);
+                        OnProcessUpdated(process, step);
+                        
+                        if (k < updateSteps)
+                        {
+                            await Task.Delay(progressUpdateInterval);
+                        }
+                    }
+                    
+                    // Ensure we hit exactly the end progress
+                    step.Progress = endProgress;
+                    OnProcessUpdated(process, step);
                 }
 
                 // Complete the step
@@ -296,9 +315,20 @@ namespace RevitAIAssistant.Services
                 step.EndTime = DateTime.Now;
                 step.Result = GenerateStepResult(step);
 
-                // Update overall progress
-                process.OverallProgress = (int)((i + 1) / (float)process.Steps.Count * 100);
-                OnProcessUpdated(process, step);
+                // Update overall progress smoothly
+                int targetProgress = (int)((i + 1) / (float)process.Steps.Count * 100);
+                int currentProgress = process.OverallProgress;
+                int progressDiff = targetProgress - currentProgress;
+                int animationSteps = 10;
+                
+                for (int p = 1; p <= animationSteps; p++)
+                {
+                    process.OverallProgress = currentProgress + (int)(progressDiff * ((float)p / animationSteps));
+                    OnProcessUpdated(process, step);
+                    await Task.Delay(50); // 50ms per step for smooth animation
+                }
+                
+                process.OverallProgress = targetProgress; // Ensure exact target
 
                 // Small delay before next step
                 if (i < process.Steps.Count - 1)

@@ -781,7 +781,7 @@ namespace RevitAIAssistant.UI.Controls
                                 FontSize = 12,
                                 FontStyle = FontStyles.Italic,
                                 Margin = new Thickness(32, 0, 0, 0),
-                                Foreground = new SolidColorBrush(theme.AccentColor)
+                                Foreground = new SolidColorBrush(Color.FromRgb(122, 165, 186)) // #7aa5ba
                             };
                             stepPanel.Children.Add(subTaskBlock);
                         }
@@ -797,7 +797,7 @@ namespace RevitAIAssistant.UI.Controls
                         Text = $"Completed in {duration.TotalSeconds:F1} seconds",
                         FontSize = 11,
                         Margin = new Thickness(24, 4, 0, 0),
-                        Foreground = new SolidColorBrush(theme.SecondaryText),
+                        Foreground = new SolidColorBrush(theme.SuccessColor),
                         Opacity = 0.8
                     };
                     stepPanel.Children.Add(timeBlock);

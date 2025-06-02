@@ -177,7 +177,7 @@
         
         <!-- Input area -->
         <Border Grid.Row="3" 
-                Background="White"
+                Background="#222933"
                 BorderBrush="#E0E0E0"
                 BorderThickness="0,1,0,0">
             <Grid Margin="16,12">
@@ -193,7 +193,8 @@
                          Padding="12,8"
                          BorderBrush="#BDBDBD"
                          BorderThickness="1"
-                         Background="#FAFAFA"
+                         Background="#3B4453"
+                         Foreground="White"
                          FontSize="14"
                          TextWrapping="Wrap"
                          MaxHeight="100"
