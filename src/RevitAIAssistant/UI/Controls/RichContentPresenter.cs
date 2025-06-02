@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using RevitAIAssistant.Models;
+using RevitAIAssistant.Services;
 using RevitAIAssistant.UI.Themes;
 
 namespace RevitAIAssistant.UI.Controls
@@ -25,11 +27,16 @@ namespace RevitAIAssistant.UI.Controls
 
             if (newContent == null)
             {
-                Content = null;
                 return;
             }
 
-            Content = newContent switch
+            // Avoid infinite recursion by checking if we're already processing a rich content type
+            if (newContent is UIElement)
+            {
+                return;
+            }
+
+            var visualContent = newContent switch
             {
                 ExecutionPlanContent planContent => CreateExecutionPlanView(planContent),
                 CalculationResultsContent calcContent => CreateCalculationResultsView(calcContent),
@@ -38,6 +45,33 @@ namespace RevitAIAssistant.UI.Controls
                 OrchestrationResultsContent resultsContent => CreateOrchestrationResultsView(resultsContent),
                 _ => new TextBlock { Text = newContent.ToString() ?? string.Empty }
             };
+
+            // Use the template to display the content instead of setting Content directly
+            if (Template != null)
+            {
+                var contentPresenter = Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
+                if (contentPresenter != null)
+                {
+                    contentPresenter.Content = visualContent;
+                    return;
+                }
+            }
+
+            // Fallback: replace the template with our custom content
+            Template = new ControlTemplate(typeof(RichContentPresenter))
+            {
+                VisualTree = new FrameworkElementFactory(typeof(ContentPresenter))
+                {
+                    Name = "PART_ContentPresenter"
+                }
+            };
+            ApplyTemplate();
+            
+            var presenter = Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
+            if (presenter != null)
+            {
+                presenter.Content = visualContent;
+            }
         }
 
         private UIElement CreateExecutionPlanView(ExecutionPlanContent content)
@@ -902,6 +936,18 @@ namespace RevitAIAssistant.UI.Controls
     {
         public EngineeringDocumentation Documentation { get; set; } = new();
         public Action<string>? OnExport { get; set; }
+    }
+
+    public class OrchestrationProgressContent
+    {
+        public MockOrchestrationService.OrchestrationProcess Process { get; set; } = new();
+    }
+
+    public class OrchestrationResultsContent
+    {
+        public string ProcessType { get; set; } = string.Empty;
+        public TimeSpan ExecutionTime { get; set; }
+        public List<MockOrchestrationService.OrchestrationStep> Steps { get; set; } = new();
     }
 
     #endregion
