@@ -470,21 +470,30 @@ namespace RevitAIAssistant.Services
                         ?.Select(id => new ElementId(Convert.ToInt64(id)))
                         .ToList() ?? new List<ElementId>();
 
-                    // Get mechanical system type
-                    var mechanicalSystemType = systemType.ToLower() switch
-                    {
-                        "supply air" => DuctSystemType.SupplyAir,
-                        "return air" => DuctSystemType.ReturnAir,
-                        "exhaust air" => DuctSystemType.ExhaustAir,
-                        _ => DuctSystemType.SupplyAir
-                    };
-
                     // Create mechanical system
-                    var mechanicalSystem = MechanicalSystem.Create(
-                        document,
-                        equipmentIds,
-                        mechanicalSystemType
-                    );
+                    // MechanicalSystem.Create expects a single ElementId and system type as string
+                    MechanicalSystem? mechanicalSystem = null;
+                    if (equipmentIds.Count > 0)
+                    {
+                        mechanicalSystem = MechanicalSystem.Create(
+                            document,
+                            equipmentIds[0],  // Use first equipment element
+                            systemType       // Pass system type as string
+                        );
+                        
+                        // Add remaining equipment to the system
+                        for (int i = 1; i < equipmentIds.Count; i++)
+                        {
+                            mechanicalSystem.Add(equipmentIds[i]);
+                        }
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = "No equipment specified for duct system";
+                        transaction.RollBack();
+                        return result;
+                    }
 
                     // Set system name
                     SetParameterValue(mechanicalSystem, "System Name", systemName);
@@ -525,33 +534,26 @@ namespace RevitAIAssistant.Services
                         .ToList() ?? new List<ElementId>();
 
                     // Create piping system
-                    // Note: PipingSystem.Create requires a connector, not a list of element IDs
-                    // For now, create with first equipment if available
+                    // PipingSystem.Create expects a single ElementId and system type as string
                     PipingSystem? pipingSystem = null;
                     if (equipmentIds.Count > 0)
                     {
-                        var firstEquipment = document.GetElement(equipmentIds[0]) as FamilyInstance;
-                        if (firstEquipment?.MEPModel?.ConnectorManager != null)
+                        pipingSystem = PipingSystem.Create(
+                            document,
+                            equipmentIds[0],  // Use first equipment element
+                            systemType       // Pass system type as string
+                        );
+                        
+                        // Add remaining equipment to the system
+                        for (int i = 1; i < equipmentIds.Count; i++)
                         {
-                            foreach (Connector connector in firstEquipment.MEPModel.ConnectorManager.Connectors)
-                            {
-                                if (connector.Domain == Domain.DomainPiping && !connector.IsConnected)
-                                {
-                                    pipingSystem = PipingSystem.Create(
-                                        document,
-                                        connector,
-                                        PipeSystemType.SupplyHydronic
-                                    );
-                                    break;
-                                }
-                            }
+                            pipingSystem.Add(equipmentIds[i]);
                         }
                     }
-                    
-                    if (pipingSystem == null)
+                    else
                     {
                         result.Success = false;
-                        result.Message = "No suitable connector found to create piping system";
+                        result.Message = "No equipment specified for pipe system";
                         transaction.RollBack();
                         return result;
                     }
