@@ -473,10 +473,10 @@ namespace RevitAIAssistant.Services
                     // Get mechanical system type
                     var mechanicalSystemType = systemType.ToLower() switch
                     {
-                        "supply air" => MechanicalSystemType.SupplyAir,
-                        "return air" => MechanicalSystemType.ReturnAir,
-                        "exhaust air" => MechanicalSystemType.ExhaustAir,
-                        _ => MechanicalSystemType.SupplyAir
+                        "supply air" => DuctSystemType.SupplyAir,
+                        "return air" => DuctSystemType.ReturnAir,
+                        "exhaust air" => DuctSystemType.ExhaustAir,
+                        _ => DuctSystemType.SupplyAir
                     };
 
                     // Create mechanical system
@@ -525,11 +525,36 @@ namespace RevitAIAssistant.Services
                         .ToList() ?? new List<ElementId>();
 
                     // Create piping system
-                    var pipingSystem = PipingSystem.Create(
-                        document,
-                        equipmentIds,
-                        PipeSystemType.SupplyHydronic // Simplified - would need mapping
-                    );
+                    // Note: PipingSystem.Create requires a connector, not a list of element IDs
+                    // For now, create with first equipment if available
+                    PipingSystem? pipingSystem = null;
+                    if (equipmentIds.Count > 0)
+                    {
+                        var firstEquipment = document.GetElement(equipmentIds[0]) as FamilyInstance;
+                        if (firstEquipment?.MEPModel?.ConnectorManager != null)
+                        {
+                            foreach (Connector connector in firstEquipment.MEPModel.ConnectorManager.Connectors)
+                            {
+                                if (connector.Domain == Domain.DomainPiping && !connector.IsConnected)
+                                {
+                                    pipingSystem = PipingSystem.Create(
+                                        document,
+                                        connector,
+                                        PipeSystemType.SupplyHydronic
+                                    );
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (pipingSystem == null)
+                    {
+                        result.Success = false;
+                        result.Message = "No suitable connector found to create piping system";
+                        transaction.RollBack();
+                        return result;
+                    }
 
                     // Set system name
                     SetParameterValue(pipingSystem, "System Name", systemName);
