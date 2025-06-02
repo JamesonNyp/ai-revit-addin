@@ -32,6 +32,11 @@ namespace RevitAIAssistant.UI.Commands
         {
             _execute();
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 
     /// <summary>

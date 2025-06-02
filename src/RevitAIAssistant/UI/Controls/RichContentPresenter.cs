@@ -258,9 +258,7 @@ namespace RevitAIAssistant.UI.Controls
                 Foreground = Brushes.White,
                 BorderThickness = new Thickness(0)
             };
-            approveButton.Click += (s, e) => content.OnApprove?.Invoke();
-            buttonPanel.Children.Add(approveButton);
-
+            
             var rejectButton = new Button
             {
                 Content = "Cancel",
@@ -269,7 +267,36 @@ namespace RevitAIAssistant.UI.Controls
                 Foreground = new SolidColorBrush(theme.SecondaryButtonText),
                 BorderThickness = new Thickness(0)
             };
-            rejectButton.Click += (s, e) => content.OnReject?.Invoke();
+            
+            approveButton.Click += (s, e) =>
+            {
+                // Disable both buttons
+                approveButton.IsEnabled = false;
+                rejectButton.IsEnabled = false;
+                approveButton.Opacity = 0.5;
+                rejectButton.Opacity = 0.5;
+                
+                // Change approve button to show selected state
+                approveButton.Background = new SolidColorBrush(Color.FromArgb(128, theme.SuccessColor.R, theme.SuccessColor.G, theme.SuccessColor.B));
+                
+                content.OnApprove?.Invoke();
+            };
+            
+            rejectButton.Click += (s, e) =>
+            {
+                // Disable both buttons
+                approveButton.IsEnabled = false;
+                rejectButton.IsEnabled = false;
+                approveButton.Opacity = 0.5;
+                rejectButton.Opacity = 0.5;
+                
+                // Change reject button to show selected state
+                rejectButton.Background = new SolidColorBrush(Color.FromArgb(128, theme.SecondaryButtonBackground.R, theme.SecondaryButtonBackground.G, theme.SecondaryButtonBackground.B));
+                
+                content.OnReject?.Invoke();
+            };
+            
+            buttonPanel.Children.Add(approveButton);
             buttonPanel.Children.Add(rejectButton);
 
             stackPanel.Children.Add(buttonPanel);
@@ -605,9 +632,10 @@ namespace RevitAIAssistant.UI.Controls
             var progressBar = new Border
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Width = new GridLength(content.Process.OverallProgress / 100.0, GridUnitType.Star).Value * 300,
+                Width = Math.Max(0, content.Process.OverallProgress / 100.0 * 300), // Fixed width calculation
                 Background = new LinearGradientBrush(theme.AccentColor, theme.SuccessColor, 0),
-                CornerRadius = new CornerRadius(4)
+                CornerRadius = new CornerRadius(4),
+                Height = 8 // Ensure the progress bar fills the height
             };
             progressBarBorder.Child = progressBar;
             progressPanel.Children.Add(progressBarBorder);
@@ -732,9 +760,10 @@ namespace RevitAIAssistant.UI.Controls
                     var stepProgressBar = new Border
                     {
                         HorizontalAlignment = HorizontalAlignment.Left,
-                        Width = new GridLength(step.Progress / 100.0, GridUnitType.Star).Value * 250,
+                        Width = Math.Max(0, step.Progress / 100.0 * 250), // Fixed width calculation
                         Background = new SolidColorBrush(theme.AccentColor),
-                        CornerRadius = new CornerRadius(2)
+                        CornerRadius = new CornerRadius(2),
+                        Height = 4 // Ensure the progress bar fills the height
                     };
                     stepProgressBorder.Child = stepProgressBar;
                     stepPanel.Children.Add(stepProgressBorder);
@@ -899,6 +928,13 @@ namespace RevitAIAssistant.UI.Controls
                 Foreground = Brushes.White,
                 BorderThickness = new Thickness(0)
             };
+            viewDetailsButton.Click += (s, e) =>
+            {
+                // Create a mock detailed report
+                var report = GenerateMockDetailedReport(content);
+                System.Windows.MessageBox.Show(report, "Detailed Engineering Report", 
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            };
             actionPanel.Children.Add(viewDetailsButton);
 
             var exportButton = new Button
@@ -910,11 +946,133 @@ namespace RevitAIAssistant.UI.Controls
                 BorderThickness = new Thickness(1),
                 BorderBrush = new SolidColorBrush(theme.BorderColor)
             };
+            exportButton.Click += (s, e) =>
+            {
+                // Show export options
+                ShowExportOptions(content);
+            };
             actionPanel.Children.Add(exportButton);
 
             stackPanel.Children.Add(actionPanel);
 
             return stackPanel;
+        }
+
+        private string GenerateMockDetailedReport(OrchestrationResultsContent content)
+        {
+            var report = new System.Text.StringBuilder();
+            report.AppendLine("DETAILED ENGINEERING REPORT");
+            report.AppendLine("=" + new string('=', 40));
+            report.AppendLine();
+            report.AppendLine($"Process Type: {content.ProcessType}");
+            report.AppendLine($"Execution Time: {content.ExecutionTime.TotalMinutes:F1} minutes");
+            report.AppendLine($"Completion Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            report.AppendLine();
+            report.AppendLine("EXECUTION SUMMARY");
+            report.AppendLine("-" + new string('-', 40));
+            report.AppendLine();
+            
+            foreach (var step in content.Steps)
+            {
+                report.AppendLine($"Step: {step.Name}");
+                report.AppendLine($"Agent: {step.AgentType}");
+                report.AppendLine($"Status: Completed");
+                report.AppendLine($"Duration: {(step.EndTime - step.StartTime)?.TotalSeconds:F1} seconds");
+                report.AppendLine();
+                report.AppendLine("Results:");
+                report.AppendLine(step.Result);
+                report.AppendLine();
+                report.AppendLine("-" + new string('-', 40));
+                report.AppendLine();
+            }
+            
+            report.AppendLine("COMPLIANCE SUMMARY");
+            report.AppendLine("-" + new string('-', 40));
+            report.AppendLine("✓ All calculations verified against NEC 2020");
+            report.AppendLine("✓ Equipment sizing meets ASHRAE 90.1 requirements");
+            report.AppendLine("✓ Design complies with local building codes");
+            report.AppendLine();
+            
+            report.AppendLine("RECOMMENDATIONS");
+            report.AppendLine("-" + new string('-', 40));
+            report.AppendLine("1. Review panel schedules for final approval");
+            report.AppendLine("2. Coordinate with mechanical team on equipment locations");
+            report.AppendLine("3. Update single-line diagram with latest changes");
+            report.AppendLine();
+            
+            report.AppendLine("This report is for review purposes only.");
+            report.AppendLine("Professional Engineer seal required for construction documents.");
+            
+            return report.ToString();
+        }
+
+        private void ShowExportOptions(OrchestrationResultsContent content)
+        {
+            var window = new Window
+            {
+                Title = "Export Results",
+                Width = 400,
+                Height = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Background = new SolidColorBrush(ThemeManager.CurrentTheme.WindowBackground)
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(20) };
+            
+            var titleBlock = new TextBlock
+            {
+                Text = "Select Export Format",
+                FontSize = 16,
+                FontWeight = FontWeights.SemiBold,
+                Margin = new Thickness(0, 0, 0, 20),
+                Foreground = new SolidColorBrush(ThemeManager.CurrentTheme.PrimaryText)
+            };
+            stackPanel.Children.Add(titleBlock);
+
+            var formats = new[] { "PDF Report", "Excel Workbook", "CSV Data", "Word Document" };
+            foreach (var format in formats)
+            {
+                var button = new Button
+                {
+                    Content = $"Export as {format}",
+                    Padding = new Thickness(12, 8, 12, 8),
+                    Margin = new Thickness(0, 0, 0, 10),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Background = new SolidColorBrush(ThemeManager.CurrentTheme.SecondaryButtonBackground),
+                    Foreground = new SolidColorBrush(ThemeManager.CurrentTheme.SecondaryButtonText),
+                    BorderBrush = new SolidColorBrush(ThemeManager.CurrentTheme.BorderColor),
+                    BorderThickness = new Thickness(1)
+                };
+                
+                button.Click += (s, e) =>
+                {
+                    var mockPath = $@"C:\Temp\Engineering_Report_{DateTime.Now:yyyyMMdd_HHmmss}.{format.Split(' ')[0].ToLower()}";
+                    System.Windows.MessageBox.Show(
+                        $"Mock Export Complete!\n\nFile saved to:\n{mockPath}\n\n(This is a UI test - no actual file was created)",
+                        "Export Successful",
+                        System.Windows.MessageBoxButton.OK,
+                        System.Windows.MessageBoxImage.Information);
+                    window.Close();
+                };
+                
+                stackPanel.Children.Add(button);
+            }
+
+            var cancelButton = new Button
+            {
+                Content = "Cancel",
+                Padding = new Thickness(12, 8, 12, 8),
+                Margin = new Thickness(0, 20, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Background = new SolidColorBrush(ThemeManager.CurrentTheme.SecondaryButtonBackground),
+                Foreground = new SolidColorBrush(ThemeManager.CurrentTheme.SecondaryButtonText),
+                BorderThickness = new Thickness(0)
+            };
+            cancelButton.Click += (s, e) => window.Close();
+            stackPanel.Children.Add(cancelButton);
+
+            window.Content = stackPanel;
+            window.ShowDialog();
         }
     }
 }

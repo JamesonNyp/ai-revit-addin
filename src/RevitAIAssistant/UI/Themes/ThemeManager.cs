@@ -174,10 +174,10 @@ namespace RevitAIAssistant.UI.Themes
                 IsDark = true,
                 
                 // Backgrounds
-                WindowBackground = Color.FromArgb(255, 30, 30, 30),
-                PanelBackground = Color.FromArgb(255, 37, 37, 37),
+                WindowBackground = Color.FromArgb(255, 34, 41, 51),  // Revit dark bluegrey
+                PanelBackground = Color.FromArgb(255, 34, 41, 51),   // Revit dark bluegrey
                 InputBackground = Color.FromArgb(255, 45, 45, 45),
-                ChatBackground = Color.FromArgb(255, 25, 25, 25),
+                ChatBackground = Color.FromArgb(255, 34, 41, 51),    // Revit dark bluegrey
                 CardBackground = Color.FromArgb(255, 42, 42, 42),
                 
                 // Text colors

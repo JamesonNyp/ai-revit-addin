@@ -90,7 +90,7 @@
         </DataTemplate>
     </UserControl.Resources>
     
-    <Grid Background="#FAFAFA">
+    <Grid Background="#222933">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

@@ -90,6 +90,9 @@ namespace RevitAIAssistant.UI.ViewModels
                 _inputText = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanSend));
+                OnPropertyChanged(nameof(CanSendMessage));
+                // Force command to re-evaluate CanExecute
+                (SendCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -488,10 +491,10 @@ namespace RevitAIAssistant.UI.ViewModels
             var orchestrationMessage = Messages.LastOrDefault(m => m.RichContent is OrchestrationProgressContent);
             if (orchestrationMessage != null)
             {
-                // Force UI update by reassigning the content
-                orchestrationMessage.RichContent = new OrchestrationProgressContent { Process = _activeProcess };
-                // Trigger property changed notification
-                orchestrationMessage.RichContent = orchestrationMessage.RichContent;
+                // Create a new content instance to force UI update
+                var newContent = new OrchestrationProgressContent { Process = _activeProcess };
+                orchestrationMessage.RichContent = null; // Clear first
+                orchestrationMessage.RichContent = newContent; // Then set new content
             }
 
             // Update active task info
